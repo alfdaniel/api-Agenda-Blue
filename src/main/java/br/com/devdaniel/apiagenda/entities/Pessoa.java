@@ -14,10 +14,12 @@ import br.com.devdaniel.apiagenda.entities.dto.PessoaDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @NoArgsConstructor
 @Table(name="pessoas")
 public class Pessoa implements Serializable{
