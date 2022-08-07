@@ -1,10 +1,14 @@
 package br.com.devdaniel.apiagenda.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.devdaniel.apiagenda.entities.Pessoa;
 import br.com.devdaniel.apiagenda.entities.dto.PessoaDto;
@@ -28,4 +32,10 @@ public class PessoaService {
 	}
 
 
+	public Pessoa findByName(String nome){
+		Optional<Pessoa> obj = repository.findByName(nome);
+		obj.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pessoa com nome " + nome + " não encontrado!"));
+		return obj.get();
+	}
+	
 }
