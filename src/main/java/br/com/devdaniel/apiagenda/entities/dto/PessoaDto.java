@@ -9,12 +9,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PessoaDto {
-
+	
+	private Long id;
 	private String nome;
 	private String email;
 	private String telefone;
 	
 	public PessoaDto (Pessoa pessoa) {
+		this.id = pessoa.getId();
 		this.nome = pessoa.getNome();
 		this.email = pessoa.getEmail();
 		this.telefone = pessoa.getTelefone();

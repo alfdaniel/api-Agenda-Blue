@@ -37,6 +37,7 @@ public class Pessoa implements Serializable{
 	private String telefone;
 	
 	public Pessoa(PessoaDto dto) {
+		this.id = dto.getId();
 		this.nome = dto.getNome();
 		this.email = dto.getEmail();
 		this.telefone = dto.getTelefone();
