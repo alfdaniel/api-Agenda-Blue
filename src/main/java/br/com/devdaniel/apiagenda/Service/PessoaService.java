@@ -21,4 +21,11 @@ public class PessoaService {
 		return pessoas.stream().map(x -> new PessoaDto(x)).collect(Collectors.toList());
 	}
 	
+	public Pessoa save(PessoaDto dto){
+		Pessoa obj = new Pessoa(dto); 
+		repository.save(obj);
+		return obj;
+	}
+
+
 }
