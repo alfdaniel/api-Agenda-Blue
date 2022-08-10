@@ -65,10 +65,9 @@ public class PessoaService {
 	// buscar pessoa por Id
 	public Pessoa findById(long id) {
 		Optional<Pessoa> obj = repository.findById(id);
-		if (obj.isEmpty()) {
-			throw new PessoaException("Pessoa não encontrada!");
-		}
-		return obj.get();
+		return obj.orElseThrow(() -> new PessoaException("Pessoa não encontrada!"));
 	}
+	
+	
 	
 }

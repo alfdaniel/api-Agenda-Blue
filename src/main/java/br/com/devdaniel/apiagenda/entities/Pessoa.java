@@ -11,16 +11,17 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import br.com.devdaniel.apiagenda.entities.dto.PessoaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@Entity
-@ToString
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name="pessoas")
 public class Pessoa implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -42,5 +43,5 @@ public class Pessoa implements Serializable{
 		this.email = dto.getEmail();
 		this.telefone = dto.getTelefone();
 	}
-	
+
 }
