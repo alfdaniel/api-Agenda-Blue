@@ -2,9 +2,9 @@ package br.com.devdaniel.apiagenda.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,7 +51,7 @@ public class PessoaServiceImplTest {
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
-		startPessoa();
+		iniciandoMockPessoa();
 	}
 
 	@Test
@@ -71,7 +71,6 @@ public class PessoaServiceImplTest {
 		assertEquals(TELEFONE, pessoaList.get(INDEX).getTelefone());
 	}
 
-	
 	@Test
 	public void inserindPessoaComSucesso() {
 		when(repository.save(any())).thenReturn(pessoa);
@@ -89,7 +88,19 @@ public class PessoaServiceImplTest {
 	}
 
 	@Test
-	public void buscandoPessoaPorEmail() {		
+	public void buscandoPessoaPorEmail() {	
+		when(repository.findByName(anyString())).thenReturn(List.of(pessoa));
+		
+		List<PessoaDto> pessoaList = service.findByName(NOME);
+
+		assertNotNull(pessoaList);
+		assertEquals(1, pessoaList.size());
+		assertEquals(PessoaDto.class, pessoaList.get(INDEX).getClass());
+		assertEquals(PessoaDto.class, pessoaList.get(INDEX).getClass());
+		assertEquals(ID, pessoaList.get(INDEX).getId());
+		assertEquals(NOME, pessoaList.get(INDEX).getNome());
+		assertEquals(EMAIL, pessoaList.get(INDEX).getEmail());
+		assertEquals(TELEFONE, pessoaList.get(INDEX).getTelefone());
 	}
 
 	@Test
@@ -102,19 +113,21 @@ public class PessoaServiceImplTest {
 	}
 	
 	@Test
-	public void DeletandoPessoaPorIdException() {
-		Mockito.when(repository.findById(Mockito.anyLong()))
-		.thenThrow(new PessoaException(PESSOA_NAO_ENCONTRADA));
+	public void atualizandoPessoaCadastrada() {
+	when(repository.save(any())).thenReturn(pessoa);
+	when(repository.findById(anyLong())).thenReturn(optionalPessoa);
 		
-		try {
-			service.deleteById(ID);
-		} catch (Exception e) {
-			assertEquals(PessoaException.class, e.getClass());
-			assertEquals(PESSOA_NAO_ENCONTRADA, e.getMessage());
-			
-		}		
-	}
+		Pessoa atulaizarPessoa = service.update(pessoaDto, ID);
+		assertNotNull(atulaizarPessoa);
+		assertEquals(Pessoa.class, atulaizarPessoa.getClass());
 
+		assertEquals(ID, atulaizarPessoa.getId());
+		assertEquals(NOME, atulaizarPessoa.getNome());
+		assertEquals(EMAIL, atulaizarPessoa.getEmail());
+		assertEquals(TELEFONE, atulaizarPessoa.getTelefone());
+		
+	}
+		
 	@Test
 	public void buscarPessoaPorIdComSucesso() {
 		Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(optionalPessoa);
@@ -129,20 +142,8 @@ public class PessoaServiceImplTest {
 		assertEquals(TELEFONE, pessoaRetorno.getTelefone());
 	}
 
-	@Test
-	public void buscarPessoaPorIdComException() {
-		Mockito.when(repository.findById(Mockito.anyLong()))
-		.thenThrow(new PessoaException(PESSOA_NAO_ENCONTRADA));
 
-		try {
-			service.findById(ID);
-		} catch (Exception e) {
-			assertEquals(PessoaException.class, e.getClass());
-			assertEquals(PESSOA_NAO_ENCONTRADA, e.getMessage());
-		}
-	}
-
-	private void startPessoa() {
+	private void iniciandoMockPessoa() {
 		pessoa = new Pessoa(ID, NOME, EMAIL, TELEFONE);
 		pessoaDto = new PessoaDto(ID, NOME, EMAIL, TELEFONE);
 		optionalPessoa = Optional.of(new Pessoa(ID, NOME, EMAIL, TELEFONE));

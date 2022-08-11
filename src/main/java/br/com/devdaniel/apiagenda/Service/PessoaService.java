@@ -5,7 +5,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.devdaniel.apiagenda.entities.Pessoa;
 import br.com.devdaniel.apiagenda.entities.dto.PessoaDto;
@@ -50,19 +52,14 @@ public class PessoaService {
 	}
 	
 	// atualizar pessoa da agenda
-	public void update(PessoaDto pessoaDto, long id) throws PessoaException {
-		Optional<Pessoa> objPessoa = repository.findById(id);
-		if (objPessoa.isEmpty()) {
-			throw new PessoaException("Pessoa não encontrada!");
-		}
-
-		objPessoa.map(record -> {
+	public Pessoa update(PessoaDto pessoaDto, long id) throws PessoaException {
+		 return  repository.findById(id).map(record -> {
 			record.setNome(pessoaDto.getNome());
 			record.setEmail(pessoaDto.getEmail());
 			record.setTelefone(pessoaDto.getTelefone());
 			Pessoa pessoa = repository.save(record);
 			return pessoa;
-		});
+		}).orElseThrow(() -> new PessoaException("Pessoa não encontrada!"));
 	}
 
 	// buscar pessoa por Id
