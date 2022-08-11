@@ -2,6 +2,7 @@ package br.com.devdaniel.apiagenda.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -12,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,8 +45,9 @@ public class PessoaServiceImplTest {
 	private static final String EMAIL = "daniel@gmail";
 	private static final String TELEFONE = "9999-8888";
 
-	private static final Integer INDEX = 0;
-
+	private static final int INDEX = 0;
+	private static final String PESSOA_NAO_ENCONTRADA = "Pessoa não encontrada!";
+	
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -54,7 +55,7 @@ public class PessoaServiceImplTest {
 	}
 
 	@Test
-	public void buscarTodasPessoasCadastradas() {
+	public void buscarListaPessoasCadastradasComSucesso() {
 
 		when(repository.findAll()).thenReturn(List.of(pessoa));
 
@@ -62,14 +63,15 @@ public class PessoaServiceImplTest {
 
 		assertNotNull(pessoaList);
 		assertEquals(1, pessoaList.size());
-		assertEquals(Pessoa.class, pessoaList.get(INDEX).getClass());
-
+		assertEquals(PessoaDto.class, pessoaList.get(INDEX).getClass());
+		assertEquals(PessoaDto.class, pessoaList.get(INDEX).getClass());
 		assertEquals(ID, pessoaList.get(INDEX).getId());
 		assertEquals(NOME, pessoaList.get(INDEX).getNome());
 		assertEquals(EMAIL, pessoaList.get(INDEX).getEmail());
 		assertEquals(TELEFONE, pessoaList.get(INDEX).getTelefone());
 	}
 
+	
 	@Test
 	public void inserindPessoaComSucesso() {
 		when(repository.save(any())).thenReturn(pessoa);
@@ -87,8 +89,7 @@ public class PessoaServiceImplTest {
 	}
 
 	@Test
-	public void buscandoPessoaPorEmail() {
-
+	public void buscandoPessoaPorEmail() {		
 	}
 
 	@Test
@@ -98,7 +99,20 @@ public class PessoaServiceImplTest {
 
 		service.deleteById(ID);
 		verify(repository, times(1)).deleteById(anyLong());
-
+	}
+	
+	@Test
+	public void DeletandoPessoaPorIdException() {
+		Mockito.when(repository.findById(Mockito.anyLong()))
+		.thenThrow(new PessoaException(PESSOA_NAO_ENCONTRADA));
+		
+		try {
+			service.deleteById(ID);
+		} catch (Exception e) {
+			assertEquals(PessoaException.class, e.getClass());
+			assertEquals(PESSOA_NAO_ENCONTRADA, e.getMessage());
+			
+		}		
 	}
 
 	@Test
@@ -118,13 +132,13 @@ public class PessoaServiceImplTest {
 	@Test
 	public void buscarPessoaPorIdComException() {
 		Mockito.when(repository.findById(Mockito.anyLong()))
-		.thenThrow(new PessoaException("Pessoa não encontrada!"));
+		.thenThrow(new PessoaException(PESSOA_NAO_ENCONTRADA));
 
 		try {
 			service.findById(ID);
 		} catch (Exception e) {
 			assertEquals(PessoaException.class, e.getClass());
-			assertEquals("Pessoa não encontrada!", e.getMessage());
+			assertEquals(PESSOA_NAO_ENCONTRADA, e.getMessage());
 		}
 	}
 

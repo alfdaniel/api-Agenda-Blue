@@ -34,6 +34,9 @@ public class PessoaService {
 	// buscar pessoa por nome com native query
 	public List<PessoaDto> findByName(String nome) {
 		List<Pessoa> pessoas = repository.findByName(nome);
+		if (pessoas.isEmpty()) {
+			throw new PessoaException("Pessoa não encontrada!");
+		}
 		return pessoas.stream().map(x -> new PessoaDto(x)).collect(Collectors.toList());
 	}
 
@@ -45,7 +48,7 @@ public class PessoaService {
 		}
 		repository.deleteById(id);
 	}
-
+	
 	// atualizar pessoa da agenda
 	public void update(PessoaDto pessoaDto, long id) throws PessoaException {
 		Optional<Pessoa> objPessoa = repository.findById(id);
