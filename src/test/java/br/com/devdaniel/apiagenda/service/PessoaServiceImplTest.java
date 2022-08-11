@@ -88,7 +88,7 @@ public class PessoaServiceImplTest {
 	}
 
 	@Test
-	public void buscandoPessoaPorEmail() {	
+	public void buscandoPessoaPorNome() {	
 		when(repository.findByName(anyString())).thenReturn(List.of(pessoa));
 		
 		List<PessoaDto> pessoaList = service.findByName(NOME);

@@ -59,8 +59,9 @@ public class PessoaController {
 
 	@ApiOperation(value = "Deletar pessoa da agenda!")
 	@DeleteMapping(value = "/pessoas/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public void deleteleById(@PathVariable long id) {
+	public ResponseEntity<PessoaDto> deleteleById(@PathVariable long id) {
 		service.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
 
 	@ApiOperation(value = "Atualizando uma pessoa da agenda!")
